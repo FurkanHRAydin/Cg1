@@ -28,9 +28,6 @@ CgSceneControl::CgSceneControl()
     m_proj_matrix= glm::mat4x4(glm::vec4(1.792591, 0.0, 0.0, 0.0), glm::vec4(0.0, 1.792591, 0.0, 0.0), glm::vec4(0.0, 0.0, -1.0002, -1.0), glm::vec4(0.0, 0.0, -0.020002, 0.0));
     m_trackball_rotation=glm::mat4(1.);
 
-
-     //m_triangle= new CgExampleTriangle(21);
-
    /* Drawing Cube
     m_cube = new CgCube(21);
     for(int i=0; i < m_cube->getFaceNormals().size() ; i++) {
@@ -220,14 +217,25 @@ void CgSceneControl::handleEvent(CgBaseEvent* e)
         delete m_polyline;
         m_polyline = nullptr;
 
+
         //same algorithm for cube
         if(ev->getChecked()) {
+            /*
             for(int i=0; i < m_rotate->getFaceNormals().size() ; i++) {
                 std::vector<glm::vec3> vec;
                 vec.push_back(m_rotate->getSchwerpunkt()[i]);
                 vec.push_back((m_rotate->getSchwerpunkt()[i]) + (m_rotate->getFaceNormals()[i]) );
                 m_polylines.push_back(new CgPolyline(Functions::getId(), vec));
             }
+            */
+
+            for(int i=0; i < m_rotate->getVertexNormals().size() ; i++) {
+                std::vector<glm::vec3> vec;
+                vec.push_back(m_rotate->getVertices()[i]);
+                vec.push_back((m_rotate->getVertices()[i]) + (m_rotate->getVertexNormals()[i]) );
+                m_polylines.push_back(new CgPolyline(Functions::getId(), vec));
+            }
+
             for( int i=0; i<m_polylines.size(); i++) {
                 m_renderer->render(m_polylines[i]);
                 m_renderer->init(m_polylines[i]);

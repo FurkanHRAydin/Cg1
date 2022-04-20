@@ -10,21 +10,26 @@ m_id(id)
         m_vertices.push_back(vec.at(i));  //alle Punkte bekannt machen
     }
 
-    for(int i=0; i< (m_vertices.size() / size)-1; i++) {
-        for(int j=0; j<size-1; j++) {
-            int pos = i*size+j;
+    for(int i=0; i< (m_vertices.size() / size)-1; i++) {  //Teilt liste auf in einzelne Konturen
+        for(int j=0; j<size-1; j++) {  //geht die jeweilige Kontur durch
+            int position = i*size+j; //Aktuelle Position in der Liste
 
-            m_triangle_indices.push_back(pos);
-            m_triangle_indices.push_back(pos + 1);
-            m_triangle_indices.push_back(pos + 1 + size);
+            m_triangle_indices.push_back(position);
+            m_triangle_indices.push_back(position + 1);
+            m_triangle_indices.push_back(position + 1 + size);
 
-            m_triangle_indices.push_back(pos);
-            m_triangle_indices.push_back(pos + 1 + size);
-            m_triangle_indices.push_back(pos + size);
+            m_triangle_indices.push_back(position);
+            m_triangle_indices.push_back(position + 1 + size);
+            m_triangle_indices.push_back(position + size);
         }
     }
 
+    for(int i=0; i<m_vertices.size(); i++) {
+        m_vertex_normals.push_back(glm::vec3(0.0,0.0,0.0));
+    }
+
     for (int i=0; i<m_triangle_indices.size(); i+=3) {
+
         //schwerpunkt berechnen
         glm::vec3 vec_center = (m_vertices[m_triangle_indices[i]] + m_vertices[m_triangle_indices[i+1]] + m_vertices[m_triangle_indices[i+2]]) / (3.0f);
         m_Schwerpunkt.push_back(vec_center);
@@ -36,7 +41,15 @@ m_id(id)
         glm::vec3 normal = glm::cross(vec2,vec1);
         normal = glm::normalize(normal);
 
-        m_face_normals.push_back(normal);  //nicht vei vertex_normals abspeichern !
+        m_face_normals.push_back(normal);
+
+        //Vertex Normalen berrechnen
+        m_vertex_normals.at(m_triangle_indices[i]) += normal;
+        m_vertex_normals.at(m_triangle_indices[i+1]) += normal;
+        m_vertex_normals.at(m_triangle_indices[i+2]) += normal;
+    }
+    for(int i=0; i<m_vertex_normals.size(); i++) {
+        m_vertex_normals.at(i) = glm::normalize(m_vertex_normals.at(i));
     }
 
 }
